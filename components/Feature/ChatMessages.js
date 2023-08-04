@@ -12,10 +12,6 @@ const ChatMessages = () => {
   return (
     <div className="relative mx-auto max-w-2xl px-4">
       {messages.map((message) => {
-        if (!message.isUserMessage && message.text === "") {
-          toast.error("Internal Server Error.");
-          return;
-        }
         return (
           <div key={message.id}>
             <div className="group relative mb-4 flex items-start md:-ml-12">
