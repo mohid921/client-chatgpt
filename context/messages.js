@@ -1,8 +1,16 @@
-"use client"
+// This file is used for the context of the messages, which is be accessed by any components in the app.
+// The context is a react Hook same as state management libraries like Redux, but it is much simpler and builtin
+// The context is used to store the messages and the functions to add, remove and update the messages.
 
-import { createContext, useState } from "react";
+"use client" // It is used to run the code in the client side only, not in the server side. Introduced in Next 13 APP router
 
-// import { nanoid } from "nanoid";
+import { createContext, useState } from "react"; // import the createContext and useState from react
+
+
+// import { nanoid } from "nanoid"; // import the nanoid to generate the unique id for each message
+
+// The default values are commented out, and the initial state is kept empty array [].
+// UnCommenting these values will give a new look to introduction section of web application
 
 // const defaultValue = [
 //   {
@@ -22,8 +30,11 @@ export const MessagesContext = createContext({
 });
 
 export function MessagesProvider({ children }) {
-  const [messages, setMessages] = useState([]); // put default values
-  const [isMessageUpdating, setIsMessageUpdating] = useState(false);
+  const [messages, setMessages] = useState([]); // put default values array (if default values are unCommented otherwise put empty array [])
+  const [isMessageUpdating, setIsMessageUpdating] = useState(false); // these variable will be used to check if the message is updating or not. (it will showing the loading icon when being updated)
+
+  // The following functions are used to add, remove and update the messages
+  // The functions are passed to the context, so that they can be accessed by any components in the app.
 
   const addMessage = (message) => {
     setMessages((prev) => [...prev, message]);
@@ -45,6 +56,7 @@ export function MessagesProvider({ children }) {
   };
 
   return (
+    // The context is returned with the values and functions
     <MessagesContext.Provider
       value={{
         messages,

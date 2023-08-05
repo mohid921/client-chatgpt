@@ -4,10 +4,13 @@ import { MessagesContext } from "@/context/messages";
 import { useContext } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { toast } from "react-hot-toast";
+import { MemoizedReactMarkdown } from "@/components/Feature/markdown";
+import { CodeBlock } from "@/components/Design/codeblock";
+import remarkGfm from 'remark-gfm'
+import remarkMath from 'remark-math'
 
 const ChatMessages = () => {
-  const { messages } = useContext(MessagesContext);
-  //   const inverseMessages = [...messages].reverse();
+  const { messages } = useContext(MessagesContext); //Getting message array[] from our context
 
   return (
     <div className="relative mx-auto max-w-2xl px-4">
@@ -15,8 +18,14 @@ const ChatMessages = () => {
         return (
           <div key={message.id}>
             <div className="group relative mb-4 flex items-start md:-ml-12">
-              <div className={`${"flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-md border border-gray-300 dark:border-gray-700 shadow bg-white"} ${message.isUserMessage && "dark:bg-gray-950"}`}>
+              <div
+                className={`${"flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-md border border-gray-300 dark:border-gray-700 shadow bg-white"} ${
+                  message.isUserMessage && "dark:bg-gray-950"
+                }`}
+              >
+                {/* This svg are the icon of user and openai logo, you see in left to your chats */}
                 {message.isUserMessage ? (
+                  // This is the user one
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 256 256"
@@ -26,6 +35,7 @@ const ChatMessages = () => {
                     <path d="M230.92 212c-15.23-26.33-38.7-45.21-66.09-54.16a72 72 0 1 0-73.66 0c-27.39 8.94-50.86 27.82-66.09 54.16a8 8 0 1 0 13.85 8c18.84-32.56 52.14-52 89.07-52s70.23 19.44 89.07 52a8 8 0 1 0 13.85-8ZM72 96a56 56 0 1 1 56 56 56.06 56.06 0 0 1-56-56Z"></path>
                   </svg>
                 ) : (
+                  // This is openai logo
                   <svg
                     fill="currentColor"
                     viewBox="0 0 24 24"
@@ -39,12 +49,56 @@ const ChatMessages = () => {
               </div>
               <div className="ml-4 flex-1 space-y-2 overflow-hidden px-1">
                 <div className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0">
-                  <p className="mb-2 last:mb-0 text-gray-700 dark:text-gray-300">{message.text}</p>
+                  {/* This react markdown is exported from markdown.js in components/Features, 
+                  it will memorize the rendered styles for reuse. it will increase app performance*/}
+                  <MemoizedReactMarkdown
+                    className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"
+
+                    remarkPlugins={[remarkGfm, remarkMath]}
+
+                    // components take tags such as paragraph (p) 
+                    // and apply classes or styles before they render
+                    // It can also apply methods or functions which we specify.
+                    // see code tag for example
+                    components={{
+                      p({ children }) {
+                        return (
+                          <p className="mb-2 last:mb-0 text-gray-700 dark:text-gray-300">
+                            {children}
+                          </p>
+                        );
+                      },
+                      code({ node, inline, className, children, ...props }) {
+                        const match = /language-(\w+)/.exec(className || "");
+
+                        if (inline) {
+                          return (
+                            <code className={"bg-gray-50 p-1"} {...props}>
+                              {children}
+                            </code>
+                          );
+                        }
+
+                        return (
+                          <CodeBlock
+                            key={Math.random()}
+                            language={(match && match[1]) || ""}
+                            value={String(children).replace(/\n$/, "")}
+                            {...props}
+                          />
+                        );
+                      },
+                    }}
+                  >
+                    {message.text}
+                  </MemoizedReactMarkdown>
+
                 </div>
                 <div className="flex items-center justify-end transition-opacity group-hover:opacity-100 md:absolute md:-right-10 md:-top-2 md:opacity-0">
+                  {/* This will copy the text to clipboard */}
                   <CopyToClipboard
-                    text={message.text}
-                    onCopy={() => toast.success("Copied Successfully!")}
+                    text={message.text} // This is response by chatgpt
+                    onCopy={() => toast.success("Copied Successfully!")} // It will send a successful message on screen
                   >
                     <button
                       type="button"
@@ -58,12 +112,14 @@ const ChatMessages = () => {
                       >
                         <path d="M216 32H88a8 8 0 0 0-8 8v40H40a8 8 0 0 0-8 8v128a8 8 0 0 0 8 8h128a8 8 0 0 0 8-8v-40h40a8 8 0 0 0 8-8V40a8 8 0 0 0-8-8Zm-56 176H48V96h112Zm48-48h-32V88a8 8 0 0 0-8-8H96V48h112Z"></path>
                       </svg>
+                      {/* the class sr-only hides the text, the text will be read by bots for seo */}
                       <span className="sr-only">Copy message</span>
                     </button>
                   </CopyToClipboard>
                 </div>
               </div>
             </div>
+            {/* below div is the border line at the of every message */}
             <div
               data-orientation="horizontal"
               role="none"

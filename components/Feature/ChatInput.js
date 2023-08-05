@@ -8,15 +8,17 @@ import { useContext, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 
 const ChatInput = () => {
+
   const textareaRef = useRef(null);
-  const [input, setInput] = useState("");
+
+  const [input, setInput] = useState(""); // This variable will store prompt entered by user
   const {
     messages,
     addMessage,
     removeMessage,
     updateMessage,
     setIsMessageUpdating,
-  } = useContext(MessagesContext);
+  } = useContext(MessagesContext); // Getting all the function defined in context from context folder
 
   const { mutate: sendMessage, isLoading } = useMutation({
     mutationKey: ["sendMessage"],
@@ -51,6 +53,7 @@ const ChatInput = () => {
 
       setIsMessageUpdating(true);
 
+
       const reader = stream.getReader();
       const decoder = new TextDecoder();
       let done = false;
@@ -64,13 +67,13 @@ const ChatInput = () => {
 
       // clean up
       setIsMessageUpdating(false);
-      setInput("");
 
       setTimeout(() => {
         textareaRef.current?.focus();
       }, 10);
     },
     onError: (_, message) => {
+      // If openai failed
       toast.error("Something went wrong. Please try again.");
       removeMessage(message.id);
       textareaRef.current?.focus();
@@ -86,36 +89,21 @@ const ChatInput = () => {
 
     sendMessage(message);
     setInput("");
+
   };
 
   return (
+
     <div className="fixed inset-x-0 bottom-0 bg-gradient-to-b from-muted/30 from-0% to-muted/30 to-50% dark:from-background/10 dark:from-10% dark:to-background/80 z-20">
       <div className="mx-auto sm:max-w-2xl sm:px-4">
-        {/*  */}
-        {false && (
-          <div className="flex h-12 items-center justify-center">
-            <div className="flex space-x-2">
-              <button className="inline-flex items-center justify-center rounded-md text-sm font-medium shadow ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-8 px-4 py-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 256 256"
-                  fill="currentColor"
-                  className="h-4 w-4 mr-2"
-                >
-                  <path d="M197.67 186.37a8 8 0 0 1 0 11.29C196.58 198.73 170.82 224 128 224c-37.39 0-64.53-22.4-80-39.85V208a8 8 0 0 1-16 0v-48a8 8 0 0 1 8-8h48a8 8 0 0 1 0 16H55.44C67.76 183.35 93 208 128 208c36 0 58.14-21.46 58.36-21.68a8 8 0 0 1 11.31.05ZM216 40a8 8 0 0 0-8 8v23.85C192.53 54.4 165.39 32 128 32c-42.82 0-68.58 25.27-69.66 26.34a8 8 0 0 0 11.3 11.34C69.86 69.46 92 48 128 48c35 0 60.24 24.65 72.56 40H168a8 8 0 0 0 0 16h48a8 8 0 0 0 8-8V48a8 8 0 0 0-8-8Z"></path>
-                </svg>
-                Regenerate response
-              </button>
-            </div>
-          </div>
-        )}
-        {/*  */}
+        {/* This is the input from at the bottom of the home page */}
         <div className="space-y-4 border-t bg-white dark:bg-[#09090b] px-4 py-2 shadow-lg sm:rounded-t-xl sm:border sm:border-gray-300 sm:dark:border-gray-600 md:py-4">
           <form>
             <div className="relative flex flex-col w-full overflow-hidden max-h-60 grow bg-background sm:rounded-md sm:border sm:border-gray-400 sm:dark:border-gray-500">
-              {/* Text Area */}
+              {/* Text Area (here user input the prompt)*/}
               <textarea
                 ref={textareaRef}
+                // onKeydown run when user press a key, if the key is Enter we will submit the form
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
@@ -127,11 +115,15 @@ const ChatInput = () => {
                 placeholder="Send a message."
                 spellCheck="false"
                 className="min-h-[60px] w-full resize-none bg-transparent px-4 py-[1.3rem] focus-within:outline-none sm:text-sm text-gray-500 dark:text-gray-200"
+                // The input variable is passed;
+                // The value of textarea will be same as the variable of input
                 value={input}
+                // This ONCHANGE will update the value of input, when user type something
                 onChange={(e) => setInput(e.target.value)}
               ></textarea>
 
               <div className="absolute right-0 top-4 sm:right-4">
+                {/* This is the arrow button to submit the form */}
                 <button
                   className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow-md hover:bg-primary/90 h-8 w-8 p-0"
                   type="button"
