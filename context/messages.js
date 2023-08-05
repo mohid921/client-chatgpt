@@ -7,18 +7,19 @@
 import { createContext, useState } from "react"; // import the createContext and useState from react
 
 
-// import { nanoid } from "nanoid"; // import the nanoid to generate the unique id for each message
+import { nanoid } from "nanoid"; // import the nanoid to generate the unique id for each message
 
 // The default values are commented out, and the initial state is kept empty array [].
 // UnCommenting these values will give a new look to introduction section of web application
 
-// const defaultValue = [
-//   {
-//     id: nanoid(),
-//     text: "Hello, how can I help you?",
-//     isUserMessage: false,
-//   },
-// ];
+// this sets the initial message
+const defaultValue = [
+  {
+    id: nanoid(),
+    text: "You are an expert in analysing python code",
+    isUserMessage: true, // isUserMessage true means that the role is user otherwise the role is system.
+  },
+];
 
 export const MessagesContext = createContext({
   messages: [],
@@ -30,7 +31,7 @@ export const MessagesContext = createContext({
 });
 
 export function MessagesProvider({ children }) {
-  const [messages, setMessages] = useState([]); // put default values array (if default values are unCommented otherwise put empty array [])
+  const [messages, setMessages] = useState(defaultValue); // put default values array (if default values are unCommented otherwise put empty array [])
   const [isMessageUpdating, setIsMessageUpdating] = useState(false); // these variable will be used to check if the message is updating or not. (it will showing the loading icon when being updated)
 
   // The following functions are used to add, remove and update the messages
