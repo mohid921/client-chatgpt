@@ -8,7 +8,6 @@ import { useContext, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 
 const ChatInput = () => {
-
   const textareaRef = useRef(null);
 
   const [input, setInput] = useState(""); // This variable will store prompt entered by user
@@ -53,7 +52,6 @@ const ChatInput = () => {
 
       setIsMessageUpdating(true);
 
-
       const reader = stream.getReader();
       const decoder = new TextDecoder();
       let done = false;
@@ -81,19 +79,21 @@ const ChatInput = () => {
   });
 
   const handleSendMessage = () => {
-    const message = {
+    if (!input) {
+      toast.error("No Prompt Entered");
+    } else {
+      const message = {
       id: nanoid(),
       isUserMessage: true,
       text: input,
     };
-
+    
     sendMessage(message);
     setInput("");
-
   };
+  }
 
   return (
-
     <div className="fixed inset-x-0 bottom-0 bg-gradient-to-b from-muted/30 from-0% to-muted/30 to-50% dark:from-background/10 dark:from-10% dark:to-background/80 z-20">
       <div className="mx-auto sm:max-w-2xl sm:px-4">
         {/* This is the input from at the bottom of the home page */}
