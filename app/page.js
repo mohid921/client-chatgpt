@@ -14,7 +14,7 @@ export default function Home() {
     <>
       <div className="pt-4 md:pt-10 pb-[200px]">
         {/* // if there are no messages, then introduction section will appear on our home page, otherwise messages among you and AI will appear */}
-        {messages.length === 0 ? <Intro /> : <ChatMessages />}
+        {messages.length === 1 ? <Intro /> : <ChatMessages />}
       </div>
       {/* // This is chatInput to send prompt to open ai apis */}
       <ChatInput />

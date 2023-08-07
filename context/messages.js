@@ -16,7 +16,7 @@ import { nanoid } from "nanoid"; // import the nanoid to generate the unique id 
 const defaultValue = [
   {
     id: nanoid(),
-    text: "You are an expert in analysing python code",
+    text: "You are a Product Management Expert. Your goal is to help me build the best detailed product roadmap for my needs.",
     isUserMessage: true, // isUserMessage true means that the role is user otherwise the role is system.
   },
 ];

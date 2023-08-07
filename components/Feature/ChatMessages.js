@@ -12,9 +12,11 @@ import remarkMath from 'remark-math'
 const ChatMessages = () => {
   const { messages } = useContext(MessagesContext); //Getting message array[] from our context
 
+  const messagesNewArray = messages.slice(1) // remove the first message  (the instructions passed on to chatgpt)
+  
   return (
     <div className="relative mx-auto max-w-2xl px-4">
-      {messages.map((message) => {
+      {messagesNewArray.map((message) => {
         return (
           <div key={message.id}>
             <div className="group relative mb-4 flex items-start md:-ml-12">
